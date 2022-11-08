@@ -5,44 +5,48 @@ function Navbar({ currentPage, handlePageChange }) {
     <div className="d-flex flex-wrap justify-content-center">
       <nav className="navbar navbar-expand-lg">
         <Link
-          onClick={() => handlePageChange("Brag_Board")}
+          onClick={() => handlePageChange("About")}
           className={
-            currentPage === "Brag_Board"
-              ? "nav-link active fs-3"
-              : "nav-link fs-3"
+            currentPage === "Home" ? "nav-link active fs-3" : "nav-link fs-3"
           }
-          to="/Brag_Board"
+          to="/"
         >
           Home
         </Link>
+
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Username"
+            aria-label="Username"
+            aria-describedby="button-addon2"
+          />
+          <button
+            className="btn btn-outline-secondary"
+            type="button"
+            id="button-addon2"
+          >
+            Search
+          </button>
+        </div>
         <Link
-          onClick={() => handlePageChange("portfolio")}
+          onClick={() => handlePageChange("Login")}
           className={
-            currentPage === "portfolio"
-              ? "nav-link active fs-3"
-              : "nav-link fs-3"
+            currentPage === "Login" ? "nav-link active fs-3" : "nav-link fs-3"
           }
-          to="/portfolio"
+          to="/Login"
         >
-          Portfolio
+          Login
         </Link>
         <Link
-          onClick={() => handlePageChange("resume")}
+          onClick={() => handlePageChange("Signup")}
           className={
-            currentPage === "resume" ? "nav-link active fs-3" : "nav-link fs-3"
+            currentPage === "Signup" ? "nav-link active fs-3" : "nav-link fs-3"
           }
-          to="/resume"
+          to="/Signup"
         >
-          Resume
-        </Link>
-        <Link
-          onClick={() => handlePageChange("contact")}
-          className={
-            currentPage === "contact" ? "nav-link active fs-3" : "nav-link fs-3"
-          }
-          to="/contact"
-        >
-          Contact
+          Signup
         </Link>
       </nav>
     </div>

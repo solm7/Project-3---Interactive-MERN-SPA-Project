@@ -1,3 +1,8 @@
+body {
+  background-image: url("./Images/chuck-fortner-LFVBohYmtgc-unsplash.jpg");
+  background-size: cover;
+  color: white;
+ }
 .App {
   text-align: center;
 }
