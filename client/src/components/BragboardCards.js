@@ -12,12 +12,12 @@ function Card(props) {
         <div className="button-box">
           <a href={props.data.cardLink}>
             <button type="button" className="btn btn-primary">
-              Visit Deployment
+              Game
             </button>
           </a>
           <a href={props.data.gitLink}>
             <button type="button" className="btn btn-primary">
-              Visit Github Repo
+              Stats
             </button>
           </a>
         </div>

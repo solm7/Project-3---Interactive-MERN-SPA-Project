@@ -1,21 +1,38 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+const cors = require("cors");
+
+const userModel = require("./models/user");
 
 app.use(express.json());
+app.use(cors());
 
-//figure out which connection string
-mongoose.connect("", {
-  useNewUrlParser: true,
-});
+//connection string
+mongoose.connect(
+  "mongodb+srv://solm:4ut8AIpBJH7hXAAw@bragboard.9kboqpe.mongodb.net/test",
+  {
+    useNewUrlParser: true,
+  }
+);
 
-app.get("/", async (req, res) => {
-  const user = new userModel({ userName: "Guy" });
+app.post("/insert ", async (req, res) => {
+  const userName = req.body.userName;
+  const user = new userModel({ userName: userName });
   try {
     await user.save();
   } catch (err) {
     console.log(err);
   }
+});
+
+app.get("/read", async (req, res) => {
+  userModel.find({}, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(result);
+  });
 });
 
 app.listen(3001),
