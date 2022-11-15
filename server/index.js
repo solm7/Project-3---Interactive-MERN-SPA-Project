@@ -59,6 +59,34 @@ app.get("/user/:id", async (req, res) => {
   userModel
     .findOne({ _id: req.params.id })
     .populate({ path: "bragboards" })
+    .then((user) => {
+      let boardsArray = [];
+      if (!user) {
+        return res.status(404).json({ message: "No user found" });
+      } else {
+        for (let i = 0; i < user.bragboards.length; i++) {
+          boardsArray.push(user.bragboards[i]);
+          console.log(boardsArray);
+        }
+        res.json(user.bragboards);
+      }
+    })
+    .catch((err) => res.status(500).json(err));
+});
+
+app.get("/bragboard", async (req, res) => {
+  userModel
+    .findOne(
+      { _id: req.body.userid },
+      {
+        // bragboards: {
+        $elemMatch: {
+          _id: req.body.boardid,
+        },
+        // },
+      }
+    )
+    .populate({ path: "bragboards" })
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found" })
