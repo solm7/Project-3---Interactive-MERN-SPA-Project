@@ -13,23 +13,30 @@ function Navbar({ currentPage, handlePageChange }) {
         >
           Home
         </Link>
-
-        <div className="input-group mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Username"
-            aria-label="Username"
-            aria-describedby="button-addon2"
-          />
-          <button
-            className="btn btn-outline-secondary"
-            type="button"
-            id="button-addon2"
-          >
-            Search
-          </button>
-        </div>
+        <Link>
+          <div className="input-group mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Username"
+              aria-label="Username"
+              aria-describedby="button-addon2"
+            />
+            <button
+              type="button"
+              id="button-addon2"
+              onClick={() => handlePageChange("BragBoard")}
+              className={
+                currentPage === "BragBoard"
+                  ? "btn btn-primary nav-link active fs-3"
+                  : "btn btn-primary nav-link fs-3"
+              }
+              to="/BragBoard"
+            >
+              Search
+            </button>
+          </div>
+        </Link>
         <Link
           onClick={() => handlePageChange("Login")}
           className={

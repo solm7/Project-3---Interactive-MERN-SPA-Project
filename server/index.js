@@ -5,8 +5,17 @@ const cors = require("cors");
 
 const userModel = require("./models/user");
 
+const { authMiddleware } = require("./utils/auth");
+
 app.use(express.json());
 app.use(cors());
+
+//Login
+app.use("/login", (req, res) => {
+  res.send({
+    token: "test123",
+  });
+});
 
 //connection string
 mongoose.connect(
@@ -16,11 +25,22 @@ mongoose.connect(
   }
 );
 
-app.post("/insert ", async (req, res) => {
+app.post("/insert", async (req, res) => {
   const userName = req.body.userName;
-  const user = new userModel({ userName: userName });
+  const email = req.body.email;
+  const password = req.body.password;
+  const bragBoard = [req.body.bragboards];
+  const user = new userModel({
+    userName: userName,
+    email: email,
+    password: password,
+    bragboards: bragBoard,
+  });
   try {
     await user.save();
+    res.status(200).json({
+      message: "Added User",
+    });
   } catch (err) {
     console.log(err);
   }
@@ -34,6 +54,45 @@ app.get("/read", async (req, res) => {
     res.send(result);
   });
 });
+
+app.get("/user/:id", async (req, res) => {
+  userModel
+    .findOne({ _id: req.params.id })
+    .populate({ path: "bragboards" })
+    .then((user) =>
+      !user
+        ? res.status(404).json({ message: "No user found" })
+        : res.json(user)
+    )
+    .catch((err) => res.status(500).json(err));
+});
+
+app.put("/update", async (req, res) => {
+  const userName = req.body.userName;
+  const id = req.body.id;
+
+  try {
+    await userModel.findById(id, (err, updatedBragBoard) => {
+      updatedBragBoard.bragboard = newBragBoard;
+      updatedBragBoard.save();
+      res.send("update");
+    });
+    await user.save();
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.delete("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+
+  await userModel.findByIdAndRemove(id).exec;
+  res.send("deleted");
+});
+
+// app.get("/signin", async (req, res)=>{
+
+// })
 
 app.listen(3001),
   () => {

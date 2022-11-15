@@ -1,3 +1,5 @@
+import React from "react";
+
 function Card(props) {
   return (
     <div className="card">
@@ -10,16 +12,8 @@ function Card(props) {
         <h5 className="card-title fs-2">{props.data.cardTitle}</h5>
         <p className="card-text">{props.data.cardText}</p>
         <div className="button-box">
-          <a href={props.data.cardLink}>
-            <button type="button" className="btn btn-primary">
-              Game
-            </button>
-          </a>
-          <a href={props.data.gitLink}>
-            <button type="button" className="btn btn-primary">
-              Stats
-            </button>
-          </a>
+          <a href={props.data.cardLink}>Game</a>
+          <a href={props.data.gitLink}>Stats</a>
         </div>
       </div>
     </div>
