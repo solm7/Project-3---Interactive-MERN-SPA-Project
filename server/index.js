@@ -83,13 +83,14 @@ app.get("/allboards", async (req, res) => {
 });
 
 app.get("/bragboard/:id", async (req, res) => {
+  console.log(req.params.id);
   boardModel
-    .findOne({ _id: req.params.id })
-    .populate({ path: "bragboards", select: "-__v" })
+    .findOne({ userId: req.params.id })
+    .populate({ path: "api" })
     .then((boards) =>
       !boards
         ? res.status(404).json({ message: "No board found" })
-        : res.json(bragboard.api)
+        : res.json(bragboard)
     )
     .catch((err) => res.status(500).json(err));
 });
