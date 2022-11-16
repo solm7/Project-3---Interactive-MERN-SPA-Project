@@ -96,6 +96,18 @@ app.get("/bragboard/:id", async (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
+app.get("/userboard/:userId", async (req, res) => {
+  userModel
+    .findOne({ _id: req.params.userId })
+    // .populate({ path: "bragboards" })
+    .then((user) =>
+      !user
+        ? res.status(404).json({ message: "No user found" })
+        : res.json(user)
+    )
+    .catch((err) => res.status(500).json(err));
+});
+
 app.put("/update", async (req, res) => {
   const userName = req.body.userName;
   const id = req.body.id;
