@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors");
 
 const userModel = require("./models/user");
+const boardModel = require("./models/bragboard");
 
 const { authMiddleware } = require("./utils/auth");
 
@@ -25,16 +26,14 @@ mongoose.connect(
   }
 );
 
-app.post("/insert", async (req, res) => {
+app.post("/signup", async (req, res) => {
   const userName = req.body.userName;
   const email = req.body.email;
   const password = req.body.password;
-  const bragBoard = [req.body.bragboards];
   const user = new userModel({
     userName: userName,
     email: email,
     password: password,
-    bragboards: bragBoard,
   });
   try {
     await user.save();
@@ -74,23 +73,23 @@ app.get("/user/:id", async (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-app.get("/bragboard", async (req, res) => {
-  userModel
-    .findOne(
-      { _id: req.body.userid },
-      {
-        // bragboards: {
-        $elemMatch: {
-          _id: req.body.boardid,
-        },
-        // },
-      }
-    )
-    .populate({ path: "bragboards" })
-    .then((user) =>
-      !user
-        ? res.status(404).json({ message: "No user found" })
-        : res.json(user)
+app.get("/allboards", async (req, res) => {
+  boardModel.find({}, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(result);
+  });
+});
+
+app.get("/bragboard/:id", async (req, res) => {
+  boardModel
+    .findOne({ _id: req.params.id })
+    .populate({ path: "bragboards", select: "-__v" })
+    .then((boards) =>
+      !boards
+        ? res.status(404).json({ message: "No board found" })
+        : res.json(bragboard.api)
     )
     .catch((err) => res.status(500).json(err));
 });
@@ -111,9 +110,35 @@ app.put("/update", async (req, res) => {
   }
 });
 
+// app.put("/addboard/:id", async (req, res) => {
+//   try {
+//     await userModel.findOneAndUpdate(
+//       { _id: req.params.id },
+//       {
+//         $addToSet: { bragboards: req.body },
+//       },
+//       res.send("updated user board")
+//     );
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+
+app.put("/addboard/:id", async (req, res) => {
+  boardModel.create(req.body).then((board) => {
+    return userModel.findOneAndUpdate(
+      {
+        _id: req.params.id,
+      },
+      { $addToSet: { bragboards: board._id } },
+      { new: true }
+    );
+  });
+  res.json(200);
+});
+
 app.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
-
   await userModel.findByIdAndRemove(id).exec;
   res.send("deleted");
 });
