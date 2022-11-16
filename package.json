@@ -5,7 +5,7 @@
     "install": "cd server && npm i && cd ../client && npm i"
   },
   "dependencies": {
-    "concurrently": "^7.5.0"
+    "concurrently": "^7.5.0",
+    "dotenv": "^16.0.3"
   }
-  
 }
