@@ -151,10 +151,43 @@ app.put("/addboard/:id", async (req, res) => {
   res.json(200);
 });
 
-app.delete("/delete/:id", async (req, res) => {
-  const id = req.params.id;
-  await userModel.findByIdAndRemove(id).exec;
-  res.send("deleted");
+// app.delete("/delete/:id", async (req, res) => {
+//   const id = req.params.id;
+//   await userModel.findByIdAndRemove(id).exec;
+//   res.send("deleted");
+// });
+
+app.delete("/delete/:userId", async (req, res) => {
+  const id = req.params.userId;
+  userModel
+    .findOneAndRemove({ _id: id })
+    .then((user) =>
+      !user
+        ? res.status(404).json({ message: "No user found" })
+        : boardModel.findOneAndUpdate(
+            { userId: id },
+            { $pull: { bragboards: id } },
+            { new: true }
+          )
+    )
+
+    .then((board) =>
+      !board
+        ? res.status(404).json({ message: "No Board found" })
+        : res.json({ message: "Board successfully removed" })
+    )
+    .catch((err) => res.status(500).json(err));
+});
+
+app.delete("/deleteboard/:boardId", async (req, res) => {
+  boardModel
+    .findOneAndRemove({ _id: req.params.boardId })
+    .then((board) =>
+      !board
+        ? res.status(404).json({ message: "No Board found" })
+        : res.json({ message: "Board successfully removed" })
+    )
+    .catch((err) => res.status(500).json(err));
 });
 
 // app.get("/signin", async (req, res)=>{
