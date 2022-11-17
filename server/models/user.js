@@ -1,45 +1,47 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
+const bcrypt = require("bcrypt");
 
-// const bragBoardSchema = new mongoose.Schema({
-//   api: { type: String },
-// });
-
-const userSchema = new mongoose.Schema(
-  {
-    userName: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      match: [/.+@.+\..+/, "Must Match an Email Address!"],
-    },
-    password: {
-      type: String,
-      required: true,
-      minlength: 5,
-    },
-    // bragboards: [bragBoardSchema],
-    bragboards: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "bragboard",
-      },
+const userSchema = new Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    match: [
+      /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
+      "Must use a valid email address",
     ],
   },
-  {
-    toJSON: {
-      virtuals: true,
+  password: {
+    type: String,
+    required: true,
+    minlength: 8,
+  },
+  bragboards: [
+    {
+      type: String,
     },
-  }
-);
-
-userSchema.virtual("boards").get(function () {
-  return `board: ${this.bragboards}`;
+  ],
 });
-const User = mongoose.model("User", userSchema);
+
+userSchema.pre("save", async function (next) {
+  if (this.isNew || this.isModified("password")) {
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+  }
+
+  next();
+});
+
+userSchema.methods.isCorrectPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+const User = model("User", userSchema);
 
 module.exports = User;

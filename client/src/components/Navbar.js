@@ -1,6 +1,19 @@
 import { Link } from "react-router-dom";
+import React, { useState } from "react";
 
 function Navbar({ currentPage, handlePageChange }) {
+  const [searchText, setSearchText] = useState("");
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handlePageChange("BragBoard");
+  };
+
+  const handleChange = (event) => {
+    const { userName, value } = event.target;
+    if (userName !== "") {
+      setSearchText(value);
+    }
+  };
   return (
     <div className="d-flex flex-wrap justify-content-center">
       <nav className="navbar navbar-expand-lg">
@@ -20,12 +33,14 @@ function Navbar({ currentPage, handlePageChange }) {
               className="form-control"
               placeholder="Username"
               aria-label="Username"
+              value={searchText}
+              onChange={handlePageChange}
               aria-describedby="button-addon2"
             />
             <button
               type="button"
               id="button-addon2"
-              onClick={() => handlePageChange("BragBoard")}
+              onClick={handleSubmit}
               className={
                 currentPage === "BragBoard"
                   ? "btn btn-primary nav-link active fs-3"
